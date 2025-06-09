@@ -1,5 +1,6 @@
 import { useState } from "react";
 import AuthFormWrapper from "../components/AuthFormWrapper";
+import axiosInstance from "../services/axiosInstance";
 
 export default function Login() {
   const [form, setForm] = useState({ email: "", password: "" });
@@ -7,9 +8,19 @@ export default function Login() {
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
-    console.log(form);
+    
+    try {
+    const res = await axiosInstance.post("/api/user/login", {
+      email: form.email,
+      password: form.password,
+    });
+
+    console.log("Logged in user:", res.data);
+  } catch (err) {
+    console.error("Login failed:", err.response?.data?.message);
+  }
   };
 
   return (

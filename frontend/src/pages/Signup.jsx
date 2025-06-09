@@ -1,5 +1,6 @@
 import { useState } from "react";
 import AuthFormWrapper from "../components/AuthFormWrapper";
+import axiosInstance from "../services/axiosInstance";
 
 export default function Signup() {
   const [form, setForm] = useState({ userName: "", email: "", password: "" });
@@ -7,9 +8,14 @@ export default function Signup() {
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(form);
+
+    const res = await axiosInstance.post("/api/user/signup", {
+      userName: form.userName,
+      email: form.email,
+      password: form.password,
+    });
   };
 
   return (
@@ -51,7 +57,6 @@ export default function Signup() {
         >
           Sign Up
         </button>
-        
       </form>
     </AuthFormWrapper>
   );
