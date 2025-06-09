@@ -10,20 +10,19 @@ export default function Login() {
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
 
-  const handleSubmit = async(e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    try {
-    const res = await axiosInstance.post("/api/user/login", {
-      email: form.email,
-      password: form.password,
-    });
 
-    console.log("Logged in user:", res.data);
-    navigate("/");
-  } catch (err) {
-    console.error("Login failed:", err.response?.data?.message);
-  }
+    try {
+      const res = await axiosInstance.post("/api/user/login", {
+        email: form.email,
+        password: form.password,
+      });
+      localStorage.setItem("token", res.data.token);
+      navigate("/");
+    } catch (err) {
+      console.error("Login failed:", err.response?.data?.message);
+    }
   };
 
   return (
