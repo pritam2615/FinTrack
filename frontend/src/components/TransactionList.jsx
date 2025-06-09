@@ -1,20 +1,47 @@
 import { useEffect, useState } from "react";
+import TransactionForm from "./TransactionForm";
 import axiosInstance from "../services/axiosInstance";
+import TransactionDetailModal from "./TransactionDetailModal";
 
 export default function TransactionList() {
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [editingTransaction, setEditingTransaction] = useState(null);
+  const [viewTransaction, setViewTransaction] = useState(null);
 
   const fetchTransactions = async () => {
     try {
-      const res = await axiosInstance.get("/api/transaction/all");
-      console.log("Transactions response:", res.data);
+      const res = await axiosInstance.get("/api/transaction/all", {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      });
       setTransactions(res.data.transactions);
     } catch (err) {
-      console.error("Error fetching transactions:", err.response?.data?.message || err.message);
+      console.error(
+        "Error fetching transactions:",
+        err.response?.data?.message || err.message
+      );
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      await axiosInstance.delete(`/api/transaction/delete/${id}`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      });
+      fetchTransactions();
+    } catch (err) {
+      console.error(
+        "Error deleting transaction:",
+        err.response?.data?.message || err.message
+      );
+    }
+  };
+
+  const handleUpdateComplete = () => {
+    setEditingTransaction(null);
+    fetchTransactions();
   };
 
   useEffect(() => {
@@ -24,28 +51,50 @@ export default function TransactionList() {
   if (loading) return <p>Loading transactions...</p>;
 
   return (
-    <div className="p-6">
-      <h2 className="text-xl font-bold mb-4">Your Transactions</h2>
-      {transactions.length === 0 ? (
-        <p>No transactions found.</p>
-      ) : (
-        <ul className="space-y-4">
-          {transactions.map((tx) => (
-            <li key={tx._id} className="p-4 border rounded shadow">
-              <div className="flex justify-between">
-                <span className="font-semibold">{tx.category}</span>
-                <span className={tx.type === "income" ? "text-green-600" : "text-red-600"}>
-                  ₹{tx.amount}
-                </span>
-              </div>
-              <p className="text-sm text-gray-500">{new Date(tx.date).toLocaleString()}</p>
-              <p className="text-gray-700">{tx.note || "No notes"}</p>
-            </li>
-          ))}
-        </ul>
-      )}
+    <div>
+      <TransactionForm
+        editingTransaction={editingTransaction}
+        onUpdateComplete={handleUpdateComplete}
+        onAdd={fetchTransactions}
+      />
+
+      {transactions.map((txn) => (
+        <div key={txn._id} className="bg-white p-4 shadow rounded mb-3">
+          <p>
+            <strong>{txn.category}</strong> - ₹{txn.amount}
+          </p>
+          <p className="text-sm text-gray-500">
+            {txn.type} • {new Date(txn.date).toLocaleDateString()}
+          </p>
+
+          <div className="space-x-2 mt-2">
+            <button
+              className="bg-blue-500 text-white px-3 py-1 rounded"
+              onClick={() => setViewTransaction(txn)}
+            >
+              View
+            </button>
+            <button
+              className="bg-yellow-500 text-white px-3 py-1 rounded"
+              onClick={() => setEditingTransaction(txn)}
+            >
+              Edit
+            </button>
+            <button
+              className="bg-red-500 text-white px-3 py-1 rounded"
+              onClick={() => handleDelete(txn._id)}
+            >
+              Delete
+            </button>
+          </div>
+        </div>
+      ))}
+
+      {/* View Transaction Modal */}
+      <TransactionDetailModal
+        transaction={viewTransaction}
+        onClose={() => setViewTransaction(null)}
+      />
     </div>
   );
 }
-
-
