@@ -16,6 +16,7 @@ export default function Signup() {
       email: form.email,
       password: form.password,
     });
+    navigate("/login");
   };
 
   return (

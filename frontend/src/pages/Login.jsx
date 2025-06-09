@@ -1,9 +1,11 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import AuthFormWrapper from "../components/AuthFormWrapper";
 import axiosInstance from "../services/axiosInstance";
 
 export default function Login() {
   const [form, setForm] = useState({ email: "", password: "" });
+  const navigate = useNavigate();
 
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -18,6 +20,7 @@ export default function Login() {
     });
 
     console.log("Logged in user:", res.data);
+    navigate("/");
   } catch (err) {
     console.error("Login failed:", err.response?.data?.message);
   }
