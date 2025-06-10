@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const authMiddleware = require("../middleware/authMiddleware");
+const { authMiddleware } = require("../middleware/authMiddleware");
 const { addTransaction, getTransaction, updateTransaction, deleteTransaction, getSummary } = require("../controllers/transactionController");
 
 router.post("/add", authMiddleware, addTransaction);

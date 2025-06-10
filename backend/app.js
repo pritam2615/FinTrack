@@ -7,6 +7,7 @@ require("dotenv").config();
 
 const authRoutes = require("./routes/authRoutes");
 const transactionRoutes = require("./routes/transactionRoutes");
+const budgetRoutes = require("./routes/budgetRoutes");
 
 connectDB();
 
@@ -21,6 +22,7 @@ app.use(cors({
 
 app.use("/api/user", authRoutes);
 app.use("/api/transaction", transactionRoutes);
+app.use("/api/budget", budgetRoutes);
 
 const PORT = process.env.PORT || 5000;
 

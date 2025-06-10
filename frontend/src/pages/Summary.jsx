@@ -36,6 +36,7 @@ export default function Summary() {
   return (
     <div className="max-w-5xl mx-auto bg-white p-6 rounded-lg shadow-md">
       <div className="flex justify-between items-center mb-6">
+        <div className="flex items-center gap-2 mb-4">
         <h2 className="text-2xl font-bold">
           Summary - {month}/{year}
         </h2>
@@ -59,6 +60,7 @@ export default function Summary() {
             onChange={(e) => setYear(Number(e.target.value))}
             className="border border-gray-300 rounded px-2 py-1 w-24"
           />
+        </div>
         </div>
       </div>
 

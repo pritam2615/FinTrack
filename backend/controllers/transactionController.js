@@ -131,6 +131,7 @@ exports.getSummary = async (req, res) => {
     const expenseCategories = transactions
       .filter(txn => txn.type === "expense")
       .map(txn => txn.category);
+      
     res.status(200).json({
       totalIncome,
       totalExpense,

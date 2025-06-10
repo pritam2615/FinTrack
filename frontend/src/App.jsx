@@ -5,6 +5,7 @@ import Signup from "./pages/Signup";
 import TransactionForm from "./components/TransactionForm";
 import TransactionList from "./pages/TransactionList";
 import Summary from "./pages/Summary";
+import BudgetView from "./pages/BudgetView";
 
 function App() {
   return (
@@ -18,6 +19,9 @@ function App() {
         <Route path="/add" element={<TransactionForm />}/>
         <Route path="/transactions" element={<TransactionList />} />
         <Route path="/summary" element={<Summary />} />
+
+        <Route path="/all" element={<BudgetView />} />
+        {/* <Route path="/set" element={<BudgetView/>} /> */}
       </Routes>
     </Router>  
   );
