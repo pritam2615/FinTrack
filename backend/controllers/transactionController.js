@@ -1,90 +1,90 @@
 const Transaction = require("../models/transactionModel");
 
 exports.addTransaction = async (req, res) => {
-    const { type, category, amount, date, note } = req.body;
+  const { type, category, amount, date, note } = req.body;
 
-    try {
-        const newTransaction = new Transaction({
-            userId: req.userId,
-            type,
-            category,
-            amount,
-            date,
-            note
-        });
+  try {
+    const newTransaction = new Transaction({
+      userId: req.userId,
+      type,
+      category,
+      amount,
+      date,
+      note
+    });
 
-        await newTransaction.save();
-        res.status(201).json({ message: "Transaction added successfully", newTransaction });
+    await newTransaction.save();
+    res.status(201).json({ message: "Transaction added successfully", newTransaction });
 
-    } catch (error) {
-        console.log("Error in add transaction controller", error.message);
-        res.status(500).json({ message: "Internal server error" });
-    }
+  } catch (error) {
+    console.log("Error in add transaction controller", error.message);
+    res.status(500).json({ message: "Internal server error" });
+  }
 };
 
 exports.getTransaction = async (req, res) => {
-    try {
-        const transactions = await Transaction.find({ userId: req.userId }).sort({ date: -1 });
+  try {
+    const transactions = await Transaction.find({ userId: req.userId }).sort({ date: -1 });
 
-        res.status(200).json({
-            message: "Transactions fetched successfully",
-            count: transactions.length,
-            transactions,
-        });
+    res.status(200).json({
+      message: "Transactions fetched successfully",
+      count: transactions.length,
+      transactions,
+    });
 
-    } catch (error) {
-        console.log("Error in get transaction", error.message);
-        res.status(500).json({ message: "Internal server error" });
-    }
+  } catch (error) {
+    console.log("Error in get transaction", error.message);
+    res.status(500).json({ message: "Internal server error" });
+  }
 };
 
 exports.updateTransaction = async (req, res) => {
-    const { id } = req.params;
-    const { type, category, amount, date, note } = req.body;
+  const { id } = req.params;
+  const { type, category, amount, date, note } = req.body;
 
-    try {
-        const transaction = await Transaction.findOne({ _id: id, userId: req.userId });
+  try {
+    const transaction = await Transaction.findOne({ _id: id, userId: req.userId });
 
-        if (!transaction) {
-            return res.status(404).json({ message: "Transaction not found or unauthorized" });
-        }
-
-        transaction.type = type || transaction.type;
-        transaction.category = category || transaction.category;
-        transaction.amount = amount || transaction.amount;
-        transaction.date = date || transaction.date;
-        transaction.note = note || transaction.note;
-
-        await transaction.save();
-
-        res.status(200).json({
-            message: "Transaction update successfully",
-            transaction,
-        });
-
-    } catch (error) {
-        console.log("Error in update transaction", error.message);
-        res.status(500).json({ message: "Internal server error" });
+    if (!transaction) {
+      return res.status(404).json({ message: "Transaction not found or unauthorized" });
     }
+
+    transaction.type = type || transaction.type;
+    transaction.category = category || transaction.category;
+    transaction.amount = amount || transaction.amount;
+    transaction.date = date || transaction.date;
+    transaction.note = note || transaction.note;
+
+    await transaction.save();
+
+    res.status(200).json({
+      message: "Transaction update successfully",
+      transaction,
+    });
+
+  } catch (error) {
+    console.log("Error in update transaction", error.message);
+    res.status(500).json({ message: "Internal server error" });
+  }
 };
 
 exports.deleteTransaction = async (req, res) => {
-    const { id } = req.params;
+  const { id } = req.params;
 
-    try {
-        const transaction = await Transaction.findOneAndDelete({
-            _id: id,
-            userId: req.userId,
-        });
-        if (!transaction) {
-            return res.status(404).json({ message: "Transaction not found or unauthorized" });
-        }
-
-        res.status(200).json({ message: "Transaction deleted successfully" });
-    } catch (error) {
-        console.log("Error in delete transaction", error.message);
-        res.status(500).json({ message: "Internal server error" });
+  try {
+    const transaction = await Transaction.findOneAndDelete({
+      _id: id,
+      userId: req.userId,
+    });
+    if (!transaction) {
+      return res.status(404).json({ message: "Transaction not found or unauthorized" });
     }
+
+    res.status(200).json({ message: "Transaction deleted successfully" });
+  } catch (error) {
+    console.log("Error in delete transaction", error.message);
+    res.status(500).json({ message: "Internal server error" });
+  }
 };
 
 exports.getSummary = async (req, res) => {
@@ -124,11 +124,20 @@ exports.getSummary = async (req, res) => {
 
     const netBalance = totalIncome - totalExpense;
 
+    const incomeCategories = transactions
+      .filter(txn => txn.type === "income")
+      .map(txn => txn.category);
+
+    const expenseCategories = transactions
+      .filter(txn => txn.type === "expense")
+      .map(txn => txn.category);
     res.status(200).json({
       totalIncome,
       totalExpense,
       netBalance,
       categoryBreakdown,
+      incomeCategories: [...new Set(incomeCategories)],
+      expenseCategories: [...new Set(expenseCategories)],
     });
   } catch (error) {
     console.error("Error in summary controller:", error.message);

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import TransactionForm from "../components/TransactionForm";
 import axiosInstance from "../services/axiosInstance";
 import TransactionDetailModal from "../components/TransactionDetailModal";
-import TransactionSummary from "../components/TransactionSummary";
+// import TransactionSummary from "../components/TransactionSummary";
 
 export default function TransactionList() {
   const [transactions, setTransactions] = useState([]);
@@ -53,7 +53,7 @@ export default function TransactionList() {
 
   return (
     <div>
-        <TransactionSummary transactions={transactions} />
+        {/* <TransactionSummary transactions={transactions} /> */}
       <TransactionForm
         editingTransaction={editingTransaction}
         onUpdateComplete={handleUpdateComplete}

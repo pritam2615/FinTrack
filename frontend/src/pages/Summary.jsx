@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axiosInstance from "../services/axiosInstance";
 import TransactionSummary from "../components/TransactionSummary";
+import TransactionCharts from "../components/TransactionCharts";
 
 export default function Summary() {
   const [summary, setSummary] = useState(null);
@@ -19,7 +20,10 @@ export default function Summary() {
       });
       setSummary(res.data);
     } catch (err) {
-      console.error("Failed to fetch summary:", err.response?.data?.message || err.message);
+      console.error(
+        "Failed to fetch summary:",
+        err.response?.data?.message || err.message
+      );
     } finally {
       setLoading(false);
     }
@@ -30,9 +34,11 @@ export default function Summary() {
   }, [month, year]);
 
   return (
-    <div className="max-w-2xl mx-auto bg-white p-6 rounded-lg shadow-md">
+    <div className="max-w-5xl mx-auto bg-white p-6 rounded-lg shadow-md">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold">Summary - {month}/{year}</h2>
+        <h2 className="text-2xl font-bold">
+          Summary - {month}/{year}
+        </h2>
 
         <div className="flex items-center gap-3">
           <select
@@ -78,15 +84,47 @@ export default function Summary() {
           </div>
 
           <div className="mt-6">
-            <h3 className="text-lg font-semibold mb-2">Category Breakdown</h3>
-            <ul className="list-disc pl-6 space-y-1 text-gray-700">
-              {Object.entries(summary.categoryBreakdown).map(([category, amount]) => (
-                <li key={category}>
-                  <span className="font-medium">{category}</span>: ₹{amount}
-                </li>
-              ))}
-            </ul>
+            <h3 className="text-lg font-semibold mb-4">Category Breakdown</h3>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Income Categories */}
+              <div>
+                <h4 className="text-green-700 font-semibold mb-2">💰 Income</h4>
+                <ul className="list-disc pl-6 space-y-1 text-gray-700">
+                  {Object.entries(summary.categoryBreakdown)
+                    .filter(
+                      ([_, amount]) =>
+                        amount > 0 && summary.incomeCategories?.includes(_)
+                    )
+                    .map(([category, amount]) => (
+                      <li key={category}>
+                        <span className="font-medium">{category}</span>: ₹
+                        {amount}
+                      </li>
+                    ))}
+                </ul>
+              </div>
+
+              {/* Expense Categories */}
+              <div>
+                <h4 className="text-red-700 font-semibold mb-2">💸 Expense</h4>
+                <ul className="list-disc pl-6 space-y-1 text-gray-700">
+                  {Object.entries(summary.categoryBreakdown)
+                    .filter(
+                      ([_, amount]) =>
+                        amount > 0 && summary.expenseCategories?.includes(_)
+                    )
+                    .map(([category, amount]) => (
+                      <li key={category}>
+                        <span className="font-medium">{category}</span>: ₹
+                        {amount}
+                      </li>
+                    ))}
+                </ul>
+              </div>
+            </div>
           </div>
+          <TransactionCharts summary={summary} />
         </div>
       ) : (
         <p className="text-center text-gray-500">No summary available.</p>
