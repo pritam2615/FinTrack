@@ -7,6 +7,7 @@ import TransactionList from "./pages/TransactionList";
 import Summary from "./pages/Summary";
 import BudgetView from "./pages/BudgetView";
 import Layout from "./components/Layout";
+import Profile from "./pages/Profile";
 
 function App() {
   return (
@@ -14,56 +15,13 @@ function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/profile" element={<Layout><Profile /></Layout>} />
 
-      {/* <Route element={<Layout />}>
-        <Route path="/" element={<Dashboard />} />
-        <Route path="/add" element={<TransactionForm />} />
-        <Route path="/transactions" element={<TransactionList />} />
-        <Route path="/summary" element={<Summary />} />
-        <Route path="/all" element={<BudgetView />} />
-      </Route> */}
-
-      {/* Protected Layout */}
-        <Route
-          path="/"
-          element={
-            <Layout>
-              <Dashboard />
-            </Layout>
-          }
-        />
-        <Route
-          path="/add"
-          element={
-            <Layout>
-              <TransactionForm />
-            </Layout>
-          }
-        />
-        <Route
-          path="/transactions"
-          element={
-            <Layout>
-              <TransactionList />
-            </Layout>
-          }
-        />
-        <Route
-          path="/summary"
-          element={
-            <Layout>
-              <Summary />
-            </Layout>
-          }
-        />
-        <Route
-          path="/all"
-          element={
-            <Layout>
-              <BudgetView />
-            </Layout>
-          }
-        />
+        <Route path="/" element={<Layout><Dashboard /></Layout>}/>
+        <Route path="/add" element={<Layout><TransactionForm /></Layout>}/>
+        <Route path="/transactions" element={<Layout><TransactionList /></Layout>}/>
+        <Route path="/summary" element={<Layout><Summary /></Layout>}/>
+        <Route path="/all" element={<Layout><BudgetView /></Layout>}/>
       </Routes>
     </Router>
   );

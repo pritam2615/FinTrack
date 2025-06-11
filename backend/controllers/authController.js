@@ -70,16 +70,6 @@ exports.login = async (req, res) => {
     }
 };
 
-exports.logout = (req, res) => {
-    try {
-        res.cookie("jwt", "", { maxAge: 0 });
-        res.status(200).json({ message: "Logged out successfully" });
-    } catch (error) {
-        console.log("Error in logout controller", error.message);
-        res.status(500).json({ message: "Internal Server Error" });
-    }
-};
-
 exports.getProfile = async (req, res) => {
   try {
     const user = await User.findById(req.userId).select("-password");

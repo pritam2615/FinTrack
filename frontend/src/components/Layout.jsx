@@ -11,8 +11,6 @@ import {
   User,
   ChevronLeft,
   ChevronRight,
-  Moon,
-  Sun,
 } from "lucide-react";
 import axiosInstance from "../services/axiosInstance";
 
@@ -22,9 +20,6 @@ export default function Layout({ children }) {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-  const [isDarkMode, setIsDarkMode] = useState(
-    () => localStorage.getItem("theme") === "dark"
-  );
 
   const handleLogout = () => {
     logout();
@@ -36,6 +31,7 @@ export default function Layout({ children }) {
     { label: "Transactions", path: "/transactions", icon: <List size={20} /> },
     { label: "Summary", path: "/summary", icon: <PieChart size={20} /> },
     { label: "Budgets", path: "/all", icon: <DollarSign size={20} /> },
+    { label: "Profile", path: "/profile", icon: <User size={20} /> },
   ];
 
   useEffect(() => {
@@ -52,26 +48,11 @@ export default function Layout({ children }) {
     fetchUser();
   }, []);
 
-  useEffect(() => {
-    const root = window.document.documentElement;
-    if (isDarkMode) {
-      root.classList.add("dark");
-      localStorage.setItem("theme", "dark");
-    } else {
-      root.classList.remove("dark");
-      localStorage.setItem("theme", "light");
-    }
-  }, [isDarkMode]);
-
-  const toggleDarkMode = () => {
-    setIsDarkMode(!isDarkMode);
-  };
-
   return (
     <div className="flex h-screen overflow-hidden">
       {/* Sidebar */}
       <aside
-        className={`fixed md:static z-40 inset-y-0 left-0 bg-indigo-700 text-white h-full transition-all duration-300 ${
+        className={`fixed md:static z-40 inset-y-0 left-0 dark:bg-gray-900 text-white h-full transition-all duration-300 ${
           isCollapsed ? "w-20" : "w-64"
         } ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
@@ -155,19 +136,19 @@ export default function Layout({ children }) {
             </Link>
           </div>
           <div className="flex items-center gap-3">
+          <Link
+            to="/profile"
+            className="flex items-center gap-2 hover:underline"
+          >
             <User size={28} className="text-indigo-700" />
             <span className="hidden sm:block font-medium text-gray-700">
               Welcome!
-              <span className="ml-2 font-medium text-gray-700" >{user?.userName || "Guest"}</span>
+            <span className="hidden sm:block font-medium text-gray-700">
+              {user?.userName || "Guest"}
             </span>
-            
+            </span>
+          </Link>
           </div>
-          <button
-            onClick={toggleDarkMode}
-            className="text-gray-700 dark:text-black"
-          >
-            {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
-          </button>
         </header>
 
         {/* Page Content */}
