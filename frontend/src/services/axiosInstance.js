@@ -1,8 +1,8 @@
 import axios from "axios";
 
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:5000", // your backend URL
-  withCredentials: true, // allows sending cookies (for token)
+  baseURL: "http://localhost:5000", 
+  withCredentials: true, 
 });
 
 axiosInstance.interceptors.request.use((config) => {
