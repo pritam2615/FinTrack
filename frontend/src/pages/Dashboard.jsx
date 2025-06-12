@@ -278,12 +278,6 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Line Chart */}
-      {/* <div className="bg-white p-6 rounded-xl shadow mb-8">
-        <h3 className="text-lg font-semibold mb-4">Monthly Income vs Expense</h3>
-        <Line data={lineChartData} />
-      </div> */}
-
       {/* Recent Transactions */}
       <div className="bg-white p-6 rounded-xl shadow">
         <h3 className="text-lg font-semibold mb-4">Recent Transactions</h3>
