@@ -22,7 +22,7 @@ export default function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(""); // clear previous error
+    setError("");
 
     try {
       const res = await axiosInstance.post("/api/user/login", {
@@ -30,20 +30,21 @@ export default function Login() {
         password: form.password,
       });
 
-      const token = res?.data?.token;
-      if (!token) {
-        setError("Login failed. Server did not return a token.");
-        return;
-      }
+      console.log("Login Response:", res.data);
 
-      login(token); // save to context and localStorage
-      navigate("/"); // redirect to dashboard
-    } catch (err) {
-      const msg =
-        err.response?.data?.message || "Login failed. Please try again.";
-      setError(msg);
+      if (res.data.token) {
+      login(res.data.token);
+      navigate("/");
+    } else {
+      setError("Login failed. Invalid server response.");
+      alert("Login failed. Please try again.");
     }
-  };
+  } catch (err) {
+    const msg = err.response?.data?.message || "Invalid credentials";
+    setError(msg);
+    alert(msg);
+  }
+};
 
   return (
     <AuthFormWrapper title="Login to FinTrack">

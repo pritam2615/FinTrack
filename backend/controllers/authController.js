@@ -1,6 +1,6 @@
 const User = require("../models/authModel");
 const bcrypt = require("bcryptjs");
-const generateToken = require("../config/utils");
+const generateToken = require("../config/generateToken");
 
 exports.signup = async (req, res) => {
     const { userName, email, password } = req.body;
