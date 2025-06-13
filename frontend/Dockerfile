@@ -7,8 +7,7 @@ RUN npm install
 
 COPY . .
 
-RUN ls -la
-COPY / .env.docker .env
+COPY .env.docker .env
 
 RUN npm run build
 
