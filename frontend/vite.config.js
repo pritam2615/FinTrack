@@ -10,6 +10,6 @@ export default defineConfig({
   ],
   server: {
     host: true,
-    allowedHosts: ['fintrack-1-z2yh.onrender.com'],
+    allowedHosts: ['fintrack-1-3757.onrender.com'],
   }
 });
