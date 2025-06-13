@@ -15,10 +15,26 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 
+// app.use(cors({
+//   origin: "https://fintrack-1-nds5.onrender.com", 
+//   // origin: "http://localhost:5173",
+//   credentials: true, 
+// }));
+
+const allowedOrigins = [
+  "http://localhost:5173", 
+  "https://fintrack-1-nds5.onrender.com", 
+];
+
 app.use(cors({
-  origin: "https://fintrack-1-nds5.onrender.com", 
-  // origin: "http://localhost:5173",
-  credentials: true, 
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true,
 }));
 
 app.use("/api/user", authRoutes);
