@@ -3,14 +3,16 @@ FROM node:18
 WORKDIR /app
 
 COPY package*.json ./
-
-COPY .env.docker .env
-
 RUN npm install
 
 COPY . .
 
-EXPOSE 5173
+COPY .env.docker .env
 
-CMD ["npm", "run", "dev", "--", "--host"]
+RUN npm run build
 
+RUN npm install -g serve
+
+EXPOSE 80
+
+CMD ["serve", "-s", "dist", "-l", "80"]
