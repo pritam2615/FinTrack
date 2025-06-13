@@ -29,7 +29,7 @@ export default function Dashboard() {
         },
       });
 
-      const txns = res.data.transactions || [];
+      const txns = res?.data?.transactions || [];
       setTransactions(txns);
 
       const incomeTotal = txns
