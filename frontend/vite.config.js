@@ -9,6 +9,7 @@ export default defineConfig({
     tailwindcss(),
   ],
   server: {
-    host: '0.0.0.0'
+    host: true,
+    allowedHosts: ['fintrack-1-z2yh.onrender.com'],
   }
 });
