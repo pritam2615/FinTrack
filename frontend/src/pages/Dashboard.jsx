@@ -3,7 +3,6 @@ import axiosInstance from "../services/axiosInstance";
 import { Pie, Line } from "react-chartjs-2";
 import "chart.js/auto";
 import dayjs from "dayjs";
-// import { useAuth } from "../context/AuthContext"; // Uncomment if using context for token
 
 export default function Dashboard() {
   const [transactions, setTransactions] = useState([]);
@@ -14,8 +13,6 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  // const { token } = useAuth(); // Uncomment if token is from context
-
   useEffect(() => {
     fetchData();
   }, []);
@@ -25,7 +22,7 @@ export default function Dashboard() {
       setLoading(true);
       const res = await axiosInstance.get("/api/transaction/all", {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`, // or use token
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
 
@@ -51,6 +48,7 @@ export default function Dashboard() {
         categoryTotals[t.category] =
           (categoryTotals[t.category] || 0) + t.amount;
       });
+
       const top = Object.entries(categoryTotals).sort((a, b) => b[1] - a[1])[0];
       setTopCategory(top?.[0] || "N/A");
     } catch (err) {
@@ -63,30 +61,12 @@ export default function Dashboard() {
 
   const balance = income - expense;
 
-  // Monthly Line Chart
-  const lineChartData = {
-    labels: [],
-    datasets: [
-      {
-        label: "Income",
-        data: [],
-        borderColor: "#4ade80",
-        tension: 0.4,
-      },
-      {
-        label: "Expense",
-        data: [],
-        borderColor: "#f87171",
-        tension: 0.4,
-      },
-    ],
-  };
-
+  // Monthly Chart Data Preparation
   const spendByCategory = {};
   const monthlyIncome = {};
   const monthlyExpense = {};
 
-  transactions.forEach((txn) => {
+  transactions?.forEach((txn) => {
     const month = dayjs(txn.date).format("MMM");
     if (txn.type === "income") {
       monthlyIncome[month] = (monthlyIncome[month] || 0) + txn.amount;
@@ -97,15 +77,27 @@ export default function Dashboard() {
     }
   });
 
-  const months = [...new Set([...Object.keys(monthlyIncome), ...Object.keys(monthlyExpense)])].sort(
-    (a, b) => dayjs().month(a).month() - dayjs().month(b).month()
-  );
+  const monthOrder = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const months = Array.from(new Set([...Object.keys(monthlyIncome), ...Object.keys(monthlyExpense)]));
+  months.sort((a, b) => monthOrder.indexOf(a) - monthOrder.indexOf(b));
 
-  months.forEach((month) => {
-    lineChartData.labels.push(month);
-    lineChartData.datasets[0].data.push(monthlyIncome[month] || 0);
-    lineChartData.datasets[1].data.push(monthlyExpense[month] || 0);
-  });
+  const lineChartData = {
+    labels: months,
+    datasets: [
+      {
+        label: "Income",
+        data: months.map((m) => monthlyIncome[m] || 0),
+        borderColor: "#4ade80",
+        tension: 0.4,
+      },
+      {
+        label: "Expense",
+        data: months.map((m) => monthlyExpense[m] || 0),
+        borderColor: "#f87171",
+        tension: 0.4,
+      },
+    ],
+  };
 
   const pieData = {
     labels: Object.keys(spendByCategory),
@@ -129,15 +121,12 @@ export default function Dashboard() {
         <p className="text-red-600">{error}</p>
       ) : (
         <>
-          {/* Summary + Pie Chart */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <SummaryCard label="Income" value={income} color="green" />
               <SummaryCard label="Expenses" value={expense} color="red" />
               <SummaryCard label="Balance" value={balance} color="blue" />
             </div>
-
-            {/* Pie Chart */}
             <div className="bg-white p-4 rounded-xl shadow flex items-center justify-center">
               <div className="w-64 h-64">
                 {Object.keys(spendByCategory).length ? (
@@ -149,14 +138,12 @@ export default function Dashboard() {
             </div>
           </div>
 
-          {/* Extra Stats */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
             <StatCard title="Total Transactions" value={transactions.length} />
             <StatCard title="Top Category" value={topCategory} />
             <StatCard title="Avg. Transaction" value={`₹${avgTransaction}`} />
           </div>
 
-          {/* Recent Transactions */}
           <div className="bg-white p-6 rounded-xl shadow">
             <h3 className="text-lg font-semibold mb-4">Recent Transactions</h3>
             {transactions.length ? (
@@ -187,7 +174,7 @@ export default function Dashboard() {
   );
 }
 
-// Reusable UI components
+// Utility UI components
 function SummaryCard({ label, value, color }) {
   const colorMap = {
     green: "text-green-600 bg-green-50",
