@@ -7,7 +7,7 @@ RUN npm install
 
 COPY . .
 
-COPY .env.docker .env
+COPY --chown=node:node .env.docker .env
 
 RUN npm run build
 
