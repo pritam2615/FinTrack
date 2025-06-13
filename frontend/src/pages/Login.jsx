@@ -10,6 +10,7 @@ export default function Login() {
   const navigate = useNavigate();
   const { login, user } = useAuth();
 
+  // Redirect to dashboard if already logged in
   useEffect(() => {
     if (user) {
       navigate("/");
@@ -21,7 +22,7 @@ export default function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
+    setError(""); // clear previous error
 
     try {
       const res = await axiosInstance.post("/api/user/login", {
@@ -29,17 +30,18 @@ export default function Login() {
         password: form.password,
       });
 
-      if (res.data.token) {
-        login(res.data.token);
-        navigate("/");
-      } else {
-        setError("Login failed. Invalid server response.");
-        alert("Login failed. Please try again.");
+      const token = res?.data?.token;
+      if (!token) {
+        setError("Login failed. Server did not return a token.");
+        return;
       }
+
+      login(token); // save to context and localStorage
+      navigate("/"); // redirect to dashboard
     } catch (err) {
-      const msg = err.response?.data?.message || "Invalid credentials";
+      const msg =
+        err.response?.data?.message || "Login failed. Please try again.";
       setError(msg);
-      alert(msg); // basic popup. Replace with toast if needed.
     }
   };
 
@@ -65,6 +67,7 @@ export default function Login() {
           required
         />
 
+        {/* 👇 Display error if login fails */}
         {error && (
           <p className="text-red-500 text-sm text-center">{error}</p>
         )}
@@ -75,6 +78,7 @@ export default function Login() {
         >
           Login
         </button>
+
         <p className="text-sm text-center">
           Don't have an account?{" "}
           <a href="/signup" className="text-blue-600 underline">
