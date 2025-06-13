@@ -17,6 +17,7 @@ app.use(cookieParser());
 
 app.use(cors({
   origin: "https://fintrack-1-z2yh.onrender.com", 
+  // origin: "http://localhost:5173",
   credentials: true, 
 }));
 

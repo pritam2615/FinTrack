@@ -1,11 +1,19 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import AuthFormWrapper from "../components/AuthFormWrapper";
 import axiosInstance from "../services/axiosInstance";
+import { useAuth } from "../context/AuthContext";
 
 export default function Login() {
   const [form, setForm] = useState({ email: "", password: "" });
   const navigate = useNavigate();
+  const { login, user } = useAuth();
+
+  useEffect(() => {
+    if (user) {
+      navigate("/");
+    }
+  }, [user, navigate]);
 
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -18,7 +26,7 @@ export default function Login() {
         email: form.email,
         password: form.password,
       });
-      localStorage.setItem("token", res.data.token);
+      login(res.data.token);
       navigate("/");
     } catch (err) {
       console.error("Login failed:", err.response?.data?.message);
@@ -52,6 +60,12 @@ export default function Login() {
         >
           Login
         </button>
+        <p className="text-sm text-center">
+          Don't have an account?{" "}
+          <a href="/signup" className="text-blue-600 underline">
+            Sign up here
+          </a>
+        </p>
       </form>
     </AuthFormWrapper>
   );

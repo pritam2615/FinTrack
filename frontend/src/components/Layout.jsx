@@ -35,6 +35,8 @@ export default function Layout({ children }) {
   ];
 
   useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
     const fetchUser = async () => {
       try {
         const res = await axiosInstance.get("/api/user/me", {
@@ -98,14 +100,15 @@ export default function Layout({ children }) {
               </Link>
             );
           })}
-
-          <button
-            onClick={handleLogout}
-            className="flex items-center gap-3 p-3 mx-2 mt-6 bg-red-500 hover:bg-red-600 rounded-md transition"
-          >
-            <LogOut size={20} />
-            {!isCollapsed && <span>Logout</span>}
-          </button>
+          {user && (
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-3 p-3 mx-2 mt-6 bg-red-500 hover:bg-red-600 rounded-md transition"
+            >
+              <LogOut size={20} />
+              {!isCollapsed && <span>Logout</span>}
+            </button>
+          )}
         </nav>
       </aside>
 
@@ -136,18 +139,21 @@ export default function Layout({ children }) {
             </Link>
           </div>
           <div className="flex items-center gap-3">
-          <Link
-            to="/profile"
-            className="flex items-center gap-2 hover:underline"
-          >
-            <User size={28} className="text-indigo-700" />
-            <span className="hidden sm:block font-medium text-gray-700">
-              Welcome!
-            <span className="hidden sm:block font-medium text-gray-700">
-              {user?.userName || "Guest"}
-            </span>
-            </span>
-          </Link>
+            <Link
+              to="/profile"
+              className="flex items-center gap-2 hover:underline"
+            >
+              <User size={28} className="text-indigo-700" />
+              {user ? (
+                <span className="hidden sm:block font-medium text-gray-700">
+                  Welcome, {user.userName || "User"}
+                </span>
+              ) : (
+                <span className="hidden sm:block font-medium text-gray-700">
+                  Not logged in
+                </span>
+              )}
+            </Link>
           </div>
         </header>
 
