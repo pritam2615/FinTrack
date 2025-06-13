@@ -48,5 +48,5 @@ Live Demo - https://fintrack-1-3757.onrender.com
 
 👤 Author
 Pritam Suthar
-GitHub: @pritam2615
+GitHub: [@pritam2615](https://github.com/pritam2615)
 LinkedIn: https://www.linkedin.com/in/pritamsuthar/
