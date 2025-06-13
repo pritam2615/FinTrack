@@ -16,7 +16,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use(cors({
-  origin: "http://localhost:5173", 
+  origin: "https://fintrack-1-z2yh.onrender.com", 
   credentials: true, 
 }));
 
