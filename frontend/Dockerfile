@@ -7,8 +7,6 @@ RUN npm install
 
 COPY . .
 
-COPY .env.docker .env
-
 RUN npm run build
 
 EXPOSE 5173
