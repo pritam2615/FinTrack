@@ -44,7 +44,7 @@ FinTrack helps you track your financial data through:
   - Docker for containerization
   - Render for hosting
 
-Live Demo - https://fintrack-1-3757.onrender.com
+Live Demo - https://fintrack-1-nds5.onrender.com/
 
 👤 Author
 Pritam Suthar
